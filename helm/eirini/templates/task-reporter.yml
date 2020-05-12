@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "eirini-task-reporter"
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: "eirini-task-reporter"
+  template:
+    metadata:
+      labels:
+        name: "eirini-task-reporter"
+    spec:
+      dnsPolicy: "ClusterFirst"
+      serviceAccountName: "eirini-task-reporter"
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: task-reporter
+        {{- if .Values.opi.task_reporter_image }}
+        image: {{ .Values.opi.task_reporter_image }}:{{ .Values.opi.task_reporter_image_tag }}
+        {{- else }}
+        image: eirini/task-reporter@{{ .Files.Get "versions/task-reporter" }}
+        {{- end }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini/config
+        - name: cf-secrets
+          mountPath: /etc/eirini/secrets
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: "eirini"
+            items:
+            - key: task-reporter.yml
+              path: task-reporter.yml
+        - name: cf-secrets
+          projected:
+            sources:
+            - secret:
+                name: "{{ .Values.opi.taskReporter.secretName }}"
+                items:
+                - key: "{{ .Values.opi.taskReporter.certPath }}"
+                  path: eirini-client.crt
+                - key: "{{ .Values.opi.taskReporter.keyPath }}"
+                  path: eirini-client.key
+                - key: "{{ .Values.opi.taskReporter.caPath }}"
+                  path: eirini-client.ca
+            - secret:
+                name: "{{ .Values.opi.events.tls.capi.secretName }}"
+                items:
+                - key: "{{ .Values.opi.events.tls.capi.caPath }}"
+                  path: cc.ca
