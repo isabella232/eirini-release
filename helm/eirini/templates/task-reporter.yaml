@@ -43,7 +43,7 @@ spec:
               path: task-reporter.yml
         - name: cf-secrets
           secret:
-             name: "{{ .Values.opi.staging.tls.taskReporter.secretName }}"
+             secretName: "{{ .Values.opi.staging.tls.taskReporter.secretName }}"
              items:
              - key: "{{ .Values.opi.staging.tls.taskReporter.certPath }}"
                path: cc.crt
