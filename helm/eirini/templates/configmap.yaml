@@ -76,3 +76,8 @@ data:
     eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
+  namespace-controller.yml: |
+    app_namespace: {{ .Values.opi.namespace }}
+    eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
+    eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
+    ca_path: "/etc/eirini/secrets/eirini-client.ca"
