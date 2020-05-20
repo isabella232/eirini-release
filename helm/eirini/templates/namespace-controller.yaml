@@ -33,6 +33,8 @@ spec:
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config
+        - name: namespace-config-map-volume
+          mountPath: /etc/eirini/templates/lrpnamespace
       volumes:
         - name: config-map-volume
           configMap:
@@ -40,4 +42,12 @@ spec:
             items:
             - key: namespace-controller.yml
               path: namespace-controller.yml
+        - name: namespace-config-map-volume
+          configMap:
+            name: "lrpnamespace"
+            items:
+            - key: eirini-role.yml
+              path: eirini-role.yml
+            - key: eirini-role-binding.yml
+              path: eirini-role-binding.yml
 {{- end }}
