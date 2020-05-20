@@ -80,4 +80,4 @@ data:
     app_namespace: {{ .Values.opi.namespace }}
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
-    cc_ca_path: "/etc/eirini/secrets/cc.ca"
+    ca_path: "/etc/eirini/secrets/cc.ca"
