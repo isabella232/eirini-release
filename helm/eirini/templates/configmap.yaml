@@ -4,6 +4,8 @@ kind: ConfigMap
 metadata:
   name: "eirini"
   namespace: {{ .Release.Namespace }}
+  labels:
+      cloudfoundry.org/owner: eirini
 data:
   opi.yml: |
     opi:

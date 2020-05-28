@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "eirini-config-updater"
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: "eirini-config-updater"
+  template:
+    metadata:
+      labels:
+        name: "eirini-config-updater"
+    spec:
+      dnsPolicy: "ClusterFirst"
+      serviceAccountName: "opi"
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: "eirini"
+            items:
+            - key: opi.yml
+              path: opi.yml
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: config-updater
+        image: eirini/config-updater@sha256:87e5e1a161181263a1723069e289e43318ce0aec91573ae4d7b133efa08b8ae2
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /workspace/jobs/opi/config
+        ports:
+        - containerPort: 8085
+          name: https
+        resources:
+          requests:
+            cpu: 20m
+            memory: 20Mi
