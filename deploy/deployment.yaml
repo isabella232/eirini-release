@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "eirini"
+spec:
+  selector:
+    matchLabels:
+      name: "eirini"
+  template:
+    metadata:
+      labels:
+        name: "eirini"
+        eirinifs_version: "v158.0.0"
+    spec:
+      dnsPolicy: "ClusterFirst"
+      serviceAccountName: "opi"
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: "eirini"
+            items:
+            - key: opi.yml
+              path: opi.yml
+        - name: cf-secrets
+          projected:
+            sources:
+            - secret:
+                name: "capiSecret"
+                items:
+                - key: "cc.crt"
+                  path: cc.crt
+                - key: "cc.key"
+                  path: cc.key
+            - secret:
+                name: "capiSecretCA"
+                items:
+                - key: "cc.ca"
+                  path: cc.ca
+            - secret:
+                name: "eiriniSecret"
+                items:
+                - key: "eirini.crt"
+                  path: eirini-server.crt
+                - key: "eirini.key"
+                  path: eirini-server.key
+            - secret:
+                name: "eiriniSecretCA"
+                items:
+                - key: "eirini.ca"
+                  path: eirini.ca
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: opi
+        image: eirini/opi@sha256:55c68ebf835b9b6cc7edb79205f8498fe1adc79be70de7330271139011317869
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /workspace/jobs/opi/config
+        - name: cf-secrets
+          mountPath: /workspace/jobs/opi/secrets
+        ports:
+        - containerPort: 8085
+          name: https
+        resources:
+          requests:
+            cpu: 20m
+            memory: 20Mi

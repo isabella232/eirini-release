@@ -1,0 +1,66 @@
+Secrets:
+- capiSecret
+    cc.crt
+    cc.key
+- capiSecretCA
+    cc.ca
+- eiriniSecret
+    eirini.crt
+    eirini.key
+- eiriniSecretCA
+    eirini.ca
+- registry-credentials
+    docker private registry credentials
+    optional
+    in our case, not needed if bits is not used
+- ccUploaderSecret
+    cc_uploader.crt
+    cc_uploader.key
+    note: this secret should be created in all app namespaces
+    note2: this is only needed if native staging is used
+- eiriniClientSecret
+    eirini.crt
+    eirini.key
+    note: this secret should be created in all app namespaces
+    note2: this is only needed if native staging is used
+- cfCA
+    ca.crt
+    note: this secret should be created in all app namespaces
+    note2: this is only needed if native staging is used
+
+
+
+Hardcode in eirini:
+- opi.yml
+    opi:
+        registry_secret_name: registry-credentials
+        eirini_address: "https://eirini-opi.POD_NAMESPACE.svc.cluster.local:8085"
+            POD_NAMESPACE can be an env variable in Eirini
+            we can get it using the downward api
+
+        cc_uploader_secret_name: ccUploaderSecret
+        cc_uploader_cert_path: cc_uploader.crt
+        cc_uploader_key_path: cc_uploader.key
+
+        client_certs_secret_name: eiriniClientSecret
+        client_cert_path: eirini.crt
+        client_key_path: eirini.key
+
+        ca_cert_secret_name: cfCA
+        ca_cert_path: ca.crt
+
+        cc_cert_path: "/workspace/jobs/opi/secrets/cc.crt"
+        cc_key_path: "/workspace/jobs/opi/secrets/cc.key"
+        cc_ca_path: "/workspace/jobs/opi/secrets/cc.ca"
+
+        client_ca_path: "/workspace/jobs/opi/secrets/eirini.ca"
+        server_cert_path: "/workspace/jobs/opi/secrets/eirini-server.crt"
+        server_key_path: "/workspace/jobs/opi/secrets/eirini-server.key"
+
+
+
+
+
+General Notes:
+- split different components into diffent directories (e.g. deploy/core, deploy/metrics, deploy/events etc)
+    that way it's easier for cf-for-k8s or whoever to just install what they need
