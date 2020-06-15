@@ -26,26 +26,26 @@ spec:
           projected:
             sources:
             - secret:
-                name: "capiSecret"
+                name: "capi"
                 items:
                 - key: "cc.crt"
                   path: cc.crt
                 - key: "cc.key"
                   path: cc.key
             - secret:
-                name: "capiSecretCA"
+                name: "capiCA"
                 items:
                 - key: "cc.ca"
                   path: cc.ca
             - secret:
-                name: "eiriniSecret"
+                name: "eirini"
                 items:
                 - key: "eirini.crt"
                   path: eirini-server.crt
                 - key: "eirini.key"
                   path: eirini-server.key
             - secret:
-                name: "eiriniSecretCA"
+                name: "eiriniCA"
                 items:
                 - key: "eirini.ca"
                   path: eirini.ca
