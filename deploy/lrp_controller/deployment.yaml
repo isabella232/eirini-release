@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: eirini-lrp-controller
+  namespace: eirini-system
 spec:
   selector:
     matchLabels:
@@ -32,7 +33,7 @@ spec:
       volumes:
         - name: config-map-volume
           configMap:
-            name: "eirini"
+            name: eirini
             items:
             - key: lrp-controller.yml
               path: lrp-controller.yml

@@ -2,18 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "eirini-task-reporter"
+  name: eirini-task-reporter
+  namespace: eirini-system
 spec:
   selector:
     matchLabels:
-      name: "eirini-task-reporter"
+      name: eirini-task-reporter
   template:
     metadata:
       labels:
-        name: "eirini-task-reporter"
+        name: eirini-task-reporter
     spec:
-      dnsPolicy: "ClusterFirst"
-      serviceAccountName: "eirini-task-reporter"
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-task-reporter
       securityContext:
         runAsNonRoot: true
       containers:
@@ -32,7 +33,7 @@ spec:
       volumes:
         - name: config-map-volume
           configMap:
-            name: "eirini"
+            name: eirini
             items:
             - key: task-reporter.yml
               path: task-reporter.yml

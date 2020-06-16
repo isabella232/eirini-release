@@ -2,18 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "eirini-staging-reporter"
+  name: eirini-staging-reporter
+  namespace: eirini-system
 spec:
   selector:
     matchLabels:
-      name: "eirini-staging-reporter"
+      name: eirini-staging-reporter
   template:
     metadata:
       labels:
-        name: "eirini-staging-reporter"
+        name: eirini-staging-reporter
     spec:
-      dnsPolicy: "ClusterFirst"
-      serviceAccountName: "eirini-staging-reporter"
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-staging-reporter
       securityContext:
         runAsNonRoot: true
       containers:

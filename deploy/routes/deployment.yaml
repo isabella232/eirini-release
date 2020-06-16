@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "eirini-routing"
+  name: eirini-routing
+  namespace: eirini-system
 spec:
   selector:
     matchLabels:
-      name: "eirini-routing"
+      name: eirini-routing
   template:
     metadata:
       labels:
-        name: "eirini-routing"
+        name: eirini-routing
     spec:
-      dnsPolicy: "ClusterFirst"
-      serviceAccountName: "eirini-routing"
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-routing
       volumes:
         - name: config-map-volume
           configMap:
-            name: "eirini"
+            name: eirini
             items:
             - key: routing.yml
               path: routing.yml
@@ -27,7 +28,7 @@ spec:
         image: eirini/route-collector@sha256:asdasdasd
         imagePullPolicy: Always
         env:
-        - name: "NATS_PASSWORD"
+        - name: NATS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: nats
@@ -43,7 +44,7 @@ spec:
         image: eirini/route-pod-informer@sha256:asdasdasdas
         imagePullPolicy: Always
         env:
-        - name: "NATS_PASSWORD"
+        - name: NATS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: nats
@@ -59,7 +60,7 @@ spec:
         image: eirini/route-statefulset-informer@sha256:sdasdasdas
         imagePullPolicy: Always
         env:
-        - name: "NATS_PASSWORD"
+        - name: NATS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: nats

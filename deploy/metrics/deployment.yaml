@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "eirini-metrics"
+  name: eirini-metrics
+  namespace: eirini-system
 spec:
   selector:
     matchLabels:
-      name: "eirini-metrics"
+      name: eirini-metrics
   template:
     metadata:
       labels:
-        name: "eirini-metrics"
+        name: eirini-metrics
     spec:
-      dnsPolicy: "ClusterFirst"
-      serviceAccountName: "eirini-metrics"
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-metrics
       volumes:
         - name: config-map-volume
           configMap:
-            name: "eirini"
+            name: eirini
             items:
             - key: metrics.yml
               path: metrics.yml

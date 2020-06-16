@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "eirini-events"
+  name: eirini-events
+  namespace: eirini-system
 spec:
   selector:
     matchLabels:
-      name: "eirini-events"
+      name: eirini-events
   template:
     metadata:
       labels:
-        name: "eirini-events"
+        name: eirini-events
     spec:
-      dnsPolicy: "ClusterFirst"
-      serviceAccountName: "eirini-events"
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-events
       volumes:
         - name: config-map-volume
           configMap:
-            name: "eirini"
+            name: eirini
             items:
             - key: events.yml
               path: events.yml
