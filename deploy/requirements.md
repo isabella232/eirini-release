@@ -1,82 +1,107 @@
-Secrets that Eirini requires:
-in the same namespace of eirini components:
+#Eirini Components
+Eirini consists of the following components:
 
-| Secret Name | Key         | Value                     |
-| ----------- | ----------- | ------------------------- |
-| capi        | cc.crt      | client certificate        |
-|             | cc.key      | client private key        |
-| capiCA      | cc.ca       | cloud controller CA       |
-| eirini      | eirini.crt  | eirini client certificate |
-|             | eirini.key  | eirini private key        |
-| eiriniCA    | eirini.ca   |                           |
-| doppler     | doppler.crt |                           |
-|             | doppler.key |                           |
-| dopplerCA   | doppler.ca  |                           |
-| nats        | password    |                           |
+| Component        | Description                                                                                                                                                             | Sample Deployment                |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| core             | The Eirini server                                                                                                                                                       | core/deployment.yaml             |
+| events           | Monitors the state of application pods and sends an event upon an application pod crash to the cloud controller                                                         | events/deployment.yaml           |
+| lrp_controller   | Controller for the `LRP` (i.e. application) custom resource                                                                                                             | lrp_controller/deployment.yaml   |
+| metrics          | Collects various metrics (CPU/disk/memory usage) from application pods and sends metrics events to Loggregator over Doppler                                             | metrics/deployment.yaml          |
+| routes           | Sends route configuration of application pods to the configured NATS.io server                                                                                          | routes/deployment.yaml           |
+| staging-reporter | Notifies the Eirini server (`core`) whenever an application fails to stage. Consequently the Eirini server notifies the cloud controller (CC) about the staging failure | staging-reporter/deployment.yaml |
+| task-reporter    | Notifies the cloud controller that a task has completed of failed                                                                                                       | task-reporter/deployment.yaml    |
 
-optional:
+All the components above require that the namespace they are deployed to meet certain requirements (see below).
 
-- registry-credentials
-  docker private registry credentials
-  not needed if bits is not used
+# Secrets
 
-in all apps namespaces
+## Required secrets in the Eirini components namespace(s)
 
-- ccUploader
-  cc_uploader.crt
-  cc_uploader.key
-  note: this is only needed if native staging is used
-- eirini
-  eirini.crt
-  eirini.key
-  note: this is only needed if native staging is used
-- cfCA
-  ca.crt
-  note: this is only needed if native staging is used
+The table below describes all the secrets that need to be provided in the namespace where an Eirini component is deployed
 
-serviceAccounts that Eirini requires:
-in all apps namespaces:
+| Component        | Secret Name | Key         | Value                      |
+| ---------------- | ----------- | ----------- | -------------------------- |
+| core             | capi        | cc.crt      | CC client certificate      |
+|                  |             | cc.key      | CC client private key      |
+|                  | capiCA      | cc.ca       | CC CA                      |
+|                  | eirini      | eirini.crt  | eirini server certificate  |
+|                  |             | eirini.key  | eirini server private key  |
+|                  | eiriniCA    | eirini.ca   | eirini CA                  | TODO: is eiriniCA really needed? OPI TLS server does not seem to need it... |
+| ---------------- | ----------- | ----------- | -------------------------- |
+| events           | capi        | cc.crt      | CC client certificate      |
+|                  |             | cc.key      | CC client private key      |
+|                  | capiCA      | cc.ca       | CC CA                      |
+| ---------------- | ----------- | ----------- | -------------------------- |
+| lrp_controller   | eirini      | eirini.crt  | eirini client certificate  | TODO: Are the eirini client and server certificates the same? Theoretically they could differ, we need another secret then... |
+|                  |             | eirini.key  | eirini client private key  |
+|                  | eiriniCA    | eirini.ca   | eirini CA                  |
+| ---------------- | ----------- | ----------- | -------------------------- |
+| metrics          | doppler     | doppler.crt | Doppler client certificate |
+|                  |             | doppler.key | Doppler client private key |
+|                  | dopplerCA   | doppler.ca  | Doppler CA                 |
+| ---------------- | ----------- | ----------- | -------------------------- |
+| staging-reporter | eirini      | eirini.crt  | eirini client certificate  |
+|                  |             | eirini.key  | eirini client private key  |
+|                  | eiriniCA    | eirini.ca   | eirini CA                  |
+| ---------------- | ----------- | ----------- | -------------------------- |
+| task-reporter    | capi        | cc.crt      | CC client certificate      |
+|                  |             | cc.key      | CC client private key      |
+|                  | capiCA      | cc.ca       | CC CA                      |
 
-- application_service_account
-  - roles, bindings, psps required for this to work
-    e.g. deploy/example-app/serviceaccount.yaml
-- staging_service_account
-  note: only needed if native staging is used
-  - roles, bindings, psps required for this to work
-    e.g. deploy/example-app-staging/serviceaccount.yaml
+## Required secrets in the applications namespace(s) (Optional)
 
-networkPolicy (optional):
+The following secrets need to be provided in the applications namespace(s) if native staging is used:
 
-- app network policy
-  deny app ingress
-  should be managed by the networking team / capi
-  e.g.
-  ```
-  apiVersion: networking.k8s.io/v1
-  kind: NetworkPolicy
-  metadata:
-    name: deny-app-ingress
-    namespace: eirini-apps
-  spec:
-    policyTypes:
-    - Ingress
-    ingress:
-    - from:
-      - namespaceSelector:
-          matchLabels:
-            name: cf
-        podSelector:
-          matchLabels:
-            app.kubernetes.io/component: router
-      - namespaceSelector:
-          matchLabels:
-            name: cf
-        podSelector:
-          matchLabels:
-            app.kubernetes.io/component: adapter
-  ```
+| Secret Name          | Key             | Value                                    |
+| -------------------- | --------------- | ---------------------------------------- |
+| registry-credentials |                 | bits docker private registry credentials |
+| ccUploader           | cc_uploader.crt | CC client certificate                    |
+|                      | cc_uploader.key | CC client private key                    | TODO: I guess we also need the CC CA here, could it be the cfCA thing below? If yes, why not call it `ccUploaderCA/cc_uploader.ca`? |
+| eirini               | eirini.crt      | eirini server certificate                |
+|                      | eirini.key      | eirini server private key                |
+| cfCA                 | ca.crt          | CF CA                                    |
 
-Hardcode in eirini:
+# Sevice Accounts
+
+The following service accounts, roles, roles bindings and pod security policies are required in the application namespace(s):
+
+| Type                        | Sample Service Account          |
+| --------------------------- | ------------------------------- |
+| Application service account | example-app/serviceaccount.yaml |
+| Staging service account     | example-app/serviceaccount.yaml |
+
+# Applications Network Policies (Optional)
+
+Those should be managed by CAPI/networking. however, here is a sample denying applications ingress
+
+```
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-app-ingress
+  namespace: eirini-apps
+spec:
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: cf
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/component: router
+    - namespaceSelector:
+        matchLabels:
+          name: cf
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/component: adapter
+```
+
+# Eirini devs notes
+
+## To be hardcoded in eirini:
 
 - opi.yml
   opi:
