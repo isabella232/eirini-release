@@ -12,9 +12,7 @@ data:
 
       eirini_service_name: "eirini-opi"
       registry_secret_name: registry-credentials
-      eirini_address: "https://eirini_service_name.EIRINI_NAMESPACE.svc.cluster.local:8085"
-      #EIRINI_NAMESPACE can be an env variable in Eirini
-      #we can get it using the downward api
+      # eirini_address should be calculated in opi as: "https://<eirini_service_name>.<EIRINI_NAMESPACE>.svc.cluster.local:<tls_port>"
 
       cc_uploader_secret_name: cc-uploader
       cc_uploader_cert_path: cc_uploader.crt
