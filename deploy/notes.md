@@ -21,8 +21,8 @@
   - rootfs patching
   - network policy to allow only ingress from router or adapter
 - Ignore app namespace settings:
- - e.g. PSPs for apps and staging
- - Document these requirements instead
+- e.g. PSPs for apps and staging
+- Document these requirements instead
 
 ## Problems
 

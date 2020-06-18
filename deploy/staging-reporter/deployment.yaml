@@ -18,39 +18,32 @@ spec:
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: staging-reporter
-        image: eirini/staging-reporter@sha256:adasdasdasda
-        imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 15m
-            memory: 15Mi
-        volumeMounts:
-        - name: config-map-volume
-          mountPath: /etc/eirini/config
-        - name: cf-secrets
-          mountPath: /etc/eirini/secrets
+        - name: staging-reporter
+          image: eirini/staging-reporter@sha256:adasdasdasda
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 15m
+              memory: 15Mi
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/eirini/config
+            - name: cf-secrets
+              mountPath: /etc/eirini/secrets
       volumes:
         - name: config-map-volume
           configMap:
             name: "eirini"
             items:
-            - key: staging-reporter.yml
-              path: staging-reporter.yml
+              - key: staging-reporter.yml
+                path: staging-reporter.yml
         - name: cf-secrets
-          projected:
-            sources:
-            - secret:
-                name: eirini
-                items:
-                - key: eirini.crt
-                  path: eirini-client.crt
-                - key: eirini.key
-                  path: eirini-client.key
-                - key: eirini.ca
-                  path: eirini-client.ca
-            - secret:
-                name: capi
-                items:
-                - key: cc.ca
-                  path: cc.ca
+          secret:
+            secretName: eirini-client
+            items:
+              - key: eirini-client.crt
+                path: eirini-client.crt
+              - key: eirini-client.key
+                path: eirini-client.key
+              - key: eirini.ca
+                path: eirini-client.ca

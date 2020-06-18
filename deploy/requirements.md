@@ -19,56 +19,57 @@ All the components above require that the namespace they are deployed to meet ce
 
 The table below describes all the secrets that need to be provided in the namespace where an Eirini component is deployed
 
-| Component        | Secret Name | Key         | Value                      |
-| ---------------- | ----------- | ----------- | -------------------------- |
-| core             | capi        | cc.crt      | CC client certificate      |
-|                  |             | cc.key      | CC client private key      |
-|                  | capiCA      | cc.ca       | CC CA                      |
-|                  | eirini      | eirini.crt  | eirini server certificate  |
-|                  |             | eirini.key  | eirini server private key  |
-|                  | eiriniCA    | eirini.ca   | eirini CA                  | TODO: is eiriniCA really needed? OPI TLS server does not seem to need it... |
-| ---------------- | ----------- | ----------- | -------------------------- |
-| events           | capi        | cc.crt      | CC client certificate      |
-|                  |             | cc.key      | CC client private key      |
-|                  | capiCA      | cc.ca       | CC CA                      |
-| ---------------- | ----------- | ----------- | -------------------------- |
-| lrp_controller   | eirini      | eirini.crt  | eirini client certificate  | TODO: Are the eirini client and server certificates the same? Theoretically they could differ, we need another secret then... |
-|                  |             | eirini.key  | eirini client private key  |
-|                  | eiriniCA    | eirini.ca   | eirini CA                  |
-| ---------------- | ----------- | ----------- | -------------------------- |
-| metrics          | doppler     | doppler.crt | Doppler client certificate |
-|                  |             | doppler.key | Doppler client private key |
-|                  | dopplerCA   | doppler.ca  | Doppler CA                 |
-| ---------------- | ----------- | ----------- | -------------------------- |
-| staging-reporter | eirini      | eirini.crt  | eirini client certificate  |
-|                  |             | eirini.key  | eirini client private key  |
-|                  | eiriniCA    | eirini.ca   | eirini CA                  |
-| ---------------- | ----------- | ----------- | -------------------------- |
-| task-reporter    | capi        | cc.crt      | CC client certificate      |
-|                  |             | cc.key      | CC client private key      |
-|                  | capiCA      | cc.ca       | CC CA                      |
+| Component        | Secret Name   | Key               | Value                      |
+| ---------------- | ------------- | ----------------- | -------------------------- |
+| core             | capi          | cc.crt            | CC client certificate      |
+|                  |               | cc.key            | CC client private key      |
+|                  |               | cc.ca             | CC CA                      |
+|                  | eirini-server | eirini-server.crt | eirini server certificate  |
+|                  |               | eirini-server.key | eirini server private key  |
+|                  |               | eirini.ca         | eirini CA                  |
+| ---------------- | -----------   | -----------       | -------------------------- |
+| events           | capi          | cc.crt            | CC client certificate      |
+|                  |               | cc.key            | CC client private key      |
+|                  |               | cc.ca             | CC CA                      |
+| ---------------- | -----------   | -----------       | -------------------------- |
+| lrp_controller   | eirini-client | eirini-client.crt | eirini client certificate  |
+|                  |               | eirini-client.key | eirini client private key  |
+|                  |               | eirini.ca         | eirini CA                  |
+| ---------------- | -----------   | -----------       | -------------------------- |
+| metrics          | doppler       | doppler.crt       | Doppler client certificate |
+|                  |               | doppler.key       | Doppler client private key |
+|                  |               | doppler.ca        | Doppler CA                 |
+| ---------------- | -----------   | -----------       | -------------------------- |
+| staging-reporter | eirini-client | eirini-client.crt | eirini client certificate  |
+|                  |               | eirini-client.key | eirini client private key  |
+|                  |               | eirini.ca         | eirini CA                  |
+| ---------------- | -----------   | -----------       | -------------------------- |
+| task-reporter    | capi          | cc.crt            | CC client certificate      |
+|                  |               | cc.key            | CC client private key      |
+|                  |               | cc.ca             | CC CA                      |
 
 ## Required secrets in the applications namespace(s) (Optional)
 
 The following secrets need to be provided in the applications namespace(s) if native staging is used:
 
-| Secret Name          | Key             | Value                                    |
-| -------------------- | --------------- | ---------------------------------------- |
-| registry-credentials |                 | bits docker private registry credentials |
-| ccUploader           | cc_uploader.crt | CC client certificate                    |
-|                      | cc_uploader.key | CC client private key                    | TODO: I guess we also need the CC CA here, could it be the cfCA thing below? If yes, why not call it `ccUploaderCA/cc_uploader.ca`? |
-| eirini               | eirini.crt      | eirini server certificate                |
-|                      | eirini.key      | eirini server private key                |
-| cfCA                 | ca.crt          | CF CA                                    |
+| Secret Name          | Key               | Value                                    |
+| -------------------- | ----------------- | ---------------------------------------- |
+| registry-credentials |                   | bits docker private registry credentials |
+| cc-uploader          | cc_uploader.crt   | CC client certificate                    |
+|                      | cc_uploader.key   | CC client private key                    |
+|                      | cc_uploader.ca    | CC CA                                    |
+| eirini               | eirini-client.crt | eirini client certificate                |
+|                      | eirini-client.key | eirini client private key                |
+|                      | eirini.ca         | eirini CA                                |
 
 # Sevice Accounts
 
 The following service accounts, roles, roles bindings and pod security policies are required in the application namespace(s):
 
-| Type                        | Sample Service Account          |
-| --------------------------- | ------------------------------- |
-| Application service account | example-app/serviceaccount.yaml |
-| Staging service account     | example-app/serviceaccount.yaml |
+| Type                        | Sample Service Account                  |
+| --------------------------- | --------------------------------------- |
+| Application service account | example-app/serviceaccount.yaml         |
+| Staging service account     | example-app-staging/serviceaccount.yaml |
 
 # Applications Network Policies (Optional)
 
@@ -98,62 +99,3 @@ spec:
         matchLabels:
           app.kubernetes.io/component: adapter
 ```
-
-# Eirini devs notes
-
-## To be hardcoded in eirini:
-
-- opi.yml
-  opi:
-  registry_secret_name: registry-credentials
-  eirini_address: "https://eirini_service_name.EIRINI_NAMESPACE.svc.cluster.local:8085"
-  EIRINI_NAMESPACE can be an env variable in Eirini
-  we can get it using the downward api
-
-        cc_uploader_secret_name: ccUploaderSecret
-        cc_uploader_cert_path: cc_uploader.crt
-        cc_uploader_key_path: cc_uploader.key
-
-        client_certs_secret_name: eiriniClientSecret
-        client_cert_path: eirini.crt
-        client_key_path: eirini.key
-
-        ca_cert_secret_name: cfCA
-        ca_cert_path: ca.crt
-
-        cc_cert_path: "/workspace/jobs/opi/secrets/cc.crt"
-        cc_key_path: "/workspace/jobs/opi/secrets/cc.key"
-        cc_ca_path: "/workspace/jobs/opi/secrets/cc.ca"
-
-        client_ca_path: "/workspace/jobs/opi/secrets/eirini.ca"
-        server_cert_path: "/workspace/jobs/opi/secrets/eirini-server.crt"
-        server_key_path: "/workspace/jobs/opi/secrets/eirini-server.key"
-
-- metrics.yml
-  loggergator_cert_path: "/etc/eirini/secrets/doppler.crt"
-  loggregator_key_path: "/etc/eirini/secrets/doppler.key"
-  loggregator_ca_path: "/etc/eirini/secrets/doppler.ca"
-
-- events.yml
-  cc_cert_path: "/etc/eirini/secrets/cc.crt"
-  cc_key_path: "/etc/eirini/secrets/cc.key"
-  cc_ca_path: "/etc/eirini/secrets/cc.ca"
-
-- staging-reporter.yml
-  eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
-  eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
-  ca_path: "/etc/eirini/secrets/eirini-client.ca"
-
-- task-reporter.yml
-  cc_cert_path: "/etc/eirini/secrets/cc.crt"
-  cc_key_path: "/etc/eirini/secrets/cc.key"
-  ca_path: "/etc/eirini/secrets/cc.ca"
-
-- lrp-controller.yml
-  eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
-  eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
-  ca_path: "/etc/eirini/secrets/eirini-client.ca"
-
-  eirini_address: "https://eirini_service_name.EIRINI_NAMESPACE.svc.cluster.local:8085"
-  EIRINI_NAMESPACE can be an env variable in Eirini
-  we can get it using the downward api

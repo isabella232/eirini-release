@@ -18,32 +18,32 @@ spec:
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: task-reporter
-        image: eirini/task-reporter@sha256:sadsdasda
-        imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 15m
-            memory: 15Mi
-        volumeMounts:
-        - name: config-map-volume
-          mountPath: /etc/eirini/config
-        - name: cf-secrets
-          mountPath: /etc/eirini/secrets
+        - name: task-reporter
+          image: eirini/task-reporter@sha256:sadsdasda
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 15m
+              memory: 15Mi
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/eirini/config
+            - name: cf-secrets
+              mountPath: /etc/eirini/secrets
       volumes:
         - name: config-map-volume
           configMap:
             name: eirini
             items:
-            - key: task-reporter.yml
-              path: task-reporter.yml
+              - key: task-reporter.yml
+                path: task-reporter.yml
         - name: cf-secrets
           secret:
-             secretName: capi
-             items:
-             - key: cc.crt
-               path: cc.crt
-             - key: cc.key
-               path: cc.key
-             - key: cc.ca
-               path: cc.ca
+            secretName: capi
+            items:
+              - key: cc.crt
+                path: cc.crt
+              - key: cc.key
+                path: cc.key
+              - key: cc.ca
+                path: cc.ca

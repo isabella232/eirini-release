@@ -19,35 +19,30 @@ spec:
           configMap:
             name: eirini
             items:
-            - key: metrics.yml
-              path: metrics.yml
+              - key: metrics.yml
+                path: metrics.yml
         - name: cf-secrets
-          projected:
-            sources:
-            - secret:
-                name: doppler
-                items:
-                - key: doppler.crt
-                  path: doppler.crt
-                - key: doppler.key
-                  path: doppler.key
-            - secret:
-                name: dopplerCA
-                items:
-                - key: doppler.ca
-                  path: doppler.ca
+          secret:
+            secretName: doppler
+            items:
+              - key: doppler.crt
+                path: doppler.crt
+              - key: doppler.key
+                path: doppler.key
+              - key: doppler.ca
+                path: doppler.ca
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: metrics-collector
-        image: eirini/metrics-collector@sha256:asdasdasadasd
-        imagePullPolicy: Always
-        volumeMounts:
-        - name: config-map-volume
-          mountPath: /etc/eirini/config
-        - name: cf-secrets
-          mountPath: /etc/eirini/secrets
-        resources:
-          requests:
-            cpu: 15m
-            memory: 15Mi
+        - name: metrics-collector
+          image: eirini/metrics-collector@sha256:asdasdasadasd
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/eirini/config
+            - name: cf-secrets
+              mountPath: /etc/eirini/secrets
+          resources:
+            requests:
+              cpu: 15m
+              memory: 15Mi

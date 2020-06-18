@@ -21,50 +21,44 @@ spec:
           configMap:
             name: "eirini"
             items:
-            - key: opi.yml
-              path: opi.yml
+              - key: opi.yml
+                path: opi.yml
         - name: cf-secrets
           projected:
             sources:
-            - secret:
-                name: "capi"
-                items:
-                - key: "cc.crt"
-                  path: cc.crt
-                - key: "cc.key"
-                  path: cc.key
-            - secret:
-                name: "capiCA"
-                items:
-                - key: "cc.ca"
-                  path: cc.ca
-            - secret:
-                name: "eirini"
-                items:
-                - key: "eirini.crt"
-                  path: eirini-server.crt
-                - key: "eirini.key"
-                  path: eirini-server.key
-            - secret:
-                name: "eiriniCA"
-                items:
-                - key: "eirini.ca"
-                  path: eirini.ca
+              - secret:
+                  name: "capi"
+                  items:
+                    - key: "cc.crt"
+                      path: cc.crt
+                    - key: "cc.key"
+                      path: cc.key
+                    - key: "cc.ca"
+                      path: cc.ca
+              - secret:
+                  name: "eirini-server"
+                  items:
+                    - key: "eirini-server.crt"
+                      path: eirini-server.crt
+                    - key: "eirini-server.key"
+                      path: eirini-server.key
+                    - key: "eirini.ca"
+                      path: eirini.ca
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: opi
-        image: eirini/opi@sha256:55c68ebf835b9b6cc7edb79205f8498fe1adc79be70de7330271139011317869
-        imagePullPolicy: Always
-        volumeMounts:
-        - name: config-map-volume
-          mountPath: /workspace/jobs/opi/config
-        - name: cf-secrets
-          mountPath: /workspace/jobs/opi/secrets
-        ports:
-        - containerPort: 8085
-          name: https
-        resources:
-          requests:
-            cpu: 20m
-            memory: 20Mi
+        - name: opi
+          image: eirini/opi@sha256:55c68ebf835b9b6cc7edb79205f8498fe1adc79be70de7330271139011317869
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/eirini/config
+            - name: cf-secrets
+              mountPath: /etc/eirini/secrets
+          ports:
+            - containerPort: 8085
+              name: https
+          resources:
+            requests:
+              cpu: 20m
+              memory: 20Mi

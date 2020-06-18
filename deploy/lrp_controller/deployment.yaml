@@ -38,17 +38,12 @@ spec:
               - key: lrp-controller.yml
                 path: lrp-controller.yml
         - name: cf-secrets
-          projected:
-            sources:
-              - secret:
-                  name: eirini
-                  items:
-                    - key: eirini.crt
-                      path: eirini-client.crt
-                    - key: eirini.key
-                      path: eirini-client.key
-              - secret:
-                  name: eiriniCA
-                  items:
-                    - key: eirini.ca
-                      path: eirini-client.ca
+          secret:
+            secretName: eirini-client
+            items:
+              - key: eirini-client.crt
+                path: eirini-client.crt
+              - key: eirini-client.key
+                path: eirini-client.key
+              - key: eirini.ca
+                path: eirini-client.ca

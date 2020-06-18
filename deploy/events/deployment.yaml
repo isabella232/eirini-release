@@ -19,35 +19,30 @@ spec:
           configMap:
             name: eirini
             items:
-            - key: events.yml
-              path: events.yml
+              - key: events.yml
+                path: events.yml
         - name: cf-secrets
-          projected:
-            sources:
-            - secret:
-                name: capi
-                items:
-                - key: cc.crt
-                  path: cc.crt
-                - key: cc.key
-                  path: cc.key
-            - secret:
-                name: capiCA
-                items:
-                - key: cc.ca
-                  path: cc.ca
+          secret:
+            secretName: capi
+            items:
+              - key: cc.crt
+                path: cc.crt
+              - key: cc.key
+                path: cc.key
+              - key: cc.ca
+                path: cc.ca
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: event-reporter
-        image: eirini/event-reporter@sha256:asdasdasda
-        imagePullPolicy: Always
-        volumeMounts:
-        - name: config-map-volume
-          mountPath: /etc/eirini/config
-        - name: cf-secrets
-          mountPath: /etc/eirini/secrets
-        resources:
-          requests:
-            cpu: 15m
-            memory: 15Mi
+        - name: event-reporter
+          image: eirini/event-reporter@sha256:asdasdasda
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config-map-volume
+              mountPath: /etc/eirini/config
+            - name: cf-secrets
+              mountPath: /etc/eirini/secrets
+          resources:
+            requests:
+              cpu: 15m
+              memory: 15Mi
