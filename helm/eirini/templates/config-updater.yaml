@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "eirini-config-updater"
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: "eirini-config-updater"
+  template:
+    metadata:
+      labels:
+        name: "eirini-config-updater"
+    spec:
+      dnsPolicy: "ClusterFirst"
+      serviceAccountName: "eirini-config-updater"
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: config-updater
+        {{- if .Values.opi.config_updater_image }}
+        image: {{ .Values.opi.config_updater_image }}:{{ .Values.opi.config_updater_image_tag }}
+        {{- else }}
+        image: eirini/config-updater@{{ .Files.Get "versions/config-updater" }}
+        {{- end }}
+        imagePullPolicy: Always
+        env:
+        - name: EIRINI_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
