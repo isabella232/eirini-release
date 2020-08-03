@@ -100,3 +100,7 @@ data:
     eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
+  environment-injector.yml: |
+    server_cert_path: "/etc/eirini/secrets/eirini-server.crt"
+    server_key_path: "/etc/eirini/secrets/eirini-server.key"
+    tls_port: 8083

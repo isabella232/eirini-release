@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: environment-injector-mutating-webhook
+webhooks:
+- name: hook.cloudfoundry.org
+  objectSelector:
+    matchLabels:
+      cloudfoundry.org/source_type: "APP"
+  clientConfig:
+    service:
+      name: eirini-environment-injector-service
+      namespace: {{ .Release.Namespace }}
+      port: 8083
+      path: "/"
+    # caBundle: "<Put the CA Bundle here>"
+  rules:
+  - operations: ["CREATE"]
+    apiGroups: ["*"]
+    apiVersions: ["*"]
+    resources: ["pods"]
+  admissionReviewVersions: ["v1beta1"]
+  sideEffects: None

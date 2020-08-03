@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "eirini-environment-injector"
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: "eirini-environment-injector"
+  template:
+    metadata:
+      labels:
+        name: "eirini-environment-injector"
+    spec:
+      dnsPolicy: "ClusterFirst"
+      serviceAccountName: "eirini-environment-injector"
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: env-injector
+        {{- if .Values.opi.env_injector_image }}
+        image: {{ .Values.opi.env_injector_image }}:{{ .Values.opi.env_injector_image_tag }}
+        {{- else }}
+        image: eirini/environment-injector@sha256:dbfca19d9278e9c46563adce5c86bb28d128cdb2304ff2532de205d0b647b2db
+        {{- end }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini/config
+        {{- if not .Values.opi.cc_api.tls_disabled }}
+        - name: cf-secrets
+          mountPath: /etc/eirini/secrets
+        {{- end }}
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: "eirini"
+            items:
+            - key: environment-injector.yml
+              path: environment-injector.yml
+        - name: cf-secrets
+          projected:
+            sources:
+            - secret:
+                name: "{{ .Values.opi.tls.opiServer.secretName }}"
+                items:
+                - key: "{{ .Values.opi.tls.opiServer.certPath }}"
+                  path: eirini-server.crt
+                - key: "{{ .Values.opi.tls.opiServer.keyPath }}"
+                  path: eirini-server.key
