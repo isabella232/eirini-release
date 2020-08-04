@@ -8,12 +8,13 @@ webhooks:
     matchLabels:
       cloudfoundry.org/source_type: "APP"
   clientConfig:
+    # url: "https://eirini-environment-injector-service.cf-system.svc.cluster.local:8083/"
     service:
       name: eirini-environment-injector-service
       namespace: {{ .Release.Namespace }}
       port: 8083
       path: "/"
-    # caBundle: "<Put the CA Bundle here>"
+    caBundle: ""
   rules:
   - operations: ["CREATE"]
     apiGroups: ["*"]

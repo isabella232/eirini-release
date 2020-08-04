@@ -18,11 +18,11 @@ spec:
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: env-injector
+      - name: environment-injector
         {{- if .Values.opi.env_injector_image }}
         image: {{ .Values.opi.env_injector_image }}:{{ .Values.opi.env_injector_image_tag }}
         {{- else }}
-        image: eirini/environment-injector@sha256:dbfca19d9278e9c46563adce5c86bb28d128cdb2304ff2532de205d0b647b2db
+        image: eirini/environment-injector@sha256:d9fae5ee9b386e894e3f3231d29480fbfdca55f78ce795d109c3c61fbb965342
         {{- end }}
         imagePullPolicy: Always
         resources:
@@ -47,9 +47,9 @@ spec:
           projected:
             sources:
             - secret:
-                name: "{{ .Values.opi.tls.opiServer.secretName }}"
+                name: "environment-injector-tls"
                 items:
-                - key: "{{ .Values.opi.tls.opiServer.certPath }}"
+                - key: "cert"
                   path: eirini-server.crt
-                - key: "{{ .Values.opi.tls.opiServer.keyPath }}"
+                - key: "key"
                   path: eirini-server.key
