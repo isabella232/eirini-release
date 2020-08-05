@@ -47,9 +47,9 @@ spec:
           projected:
             sources:
             - secret:
-                name: "environment-injector-tls"
+                name: "eirini-environment-injector-secret"
                 items:
-                - key: "cert"
+                - key: "cert.pem"
                   path: eirini-server.crt
-                - key: "key"
+                - key: "key.pem"
                   path: eirini-server.key

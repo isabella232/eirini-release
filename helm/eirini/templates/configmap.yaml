@@ -103,4 +103,4 @@ data:
   environment-injector.yml: |
     server_cert_path: "/etc/eirini/secrets/eirini-server.crt"
     server_key_path: "/etc/eirini/secrets/eirini-server.key"
-    tls_port: 8083
+    tls_port: 8443

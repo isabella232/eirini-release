@@ -4,10 +4,18 @@ kind: Service
 metadata:
   name: eirini-environment-injector-service
   namespace: {{ .Release.Namespace }}
+# spec:
+#   ports:
+#     - port: 443
+#       targetPort: 8443
+#       protocol: TCP
+#       name: https
+#   selector:
+#     name: "eirini-environment-injector"
 spec:
-  ports:
-    - port: 8083
-      protocol: TCP
-      name: https
+  type: NodePort
   selector:
     name: "eirini-environment-injector"
+  ports:
+  - port: 8443
+    nodePort: 30443
