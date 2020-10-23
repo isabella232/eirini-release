@@ -23,7 +23,7 @@ spec:
         {{- if .Values.opi.task_reporter_image }}
         image: {{ .Values.opi.task_reporter_image }}
         {{- else }}
-        image: eirini/task-reporter@{{ .Files.Get "versions/task-reporter" }}
+        image: eirini/task-reporter@sha256:d61740f4ab2b6717748c4aaaf53c6d00363853c426cabefeec25494e068b6138
         {{- end }}
         imagePullPolicy: IfNotPresent
         resources:

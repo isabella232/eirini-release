@@ -23,7 +23,7 @@ spec:
         {{- if .Values.opi.staging_reporter_image }}
         image: {{ .Values.opi.staging_reporter_image }}
         {{- else }}
-        image: eirini/staging-reporter@{{ .Files.Get "versions/staging-reporter" }}
+        image: eirini/staging-reporter@sha256:6686f65f1c6e22620dc61e7bad939d80156a3f2258069a5a3e597d7574d5f662
         {{- end }}
         imagePullPolicy: IfNotPresent
         resources:
