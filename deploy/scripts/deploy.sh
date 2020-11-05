@@ -44,12 +44,9 @@ fi
 cat "$PROJECT_ROOT"/deploy/**/namespace.yml | kubectl apply -f -
 
 kubectl apply -f "$PROJECT_ROOT/deploy/core/"
-kubectl apply -f "$PROJECT_ROOT/deploy/core/$ns_directory"
 kubectl apply -f "$PROJECT_ROOT/deploy/workloads/"
 kubectl apply -f "$PROJECT_ROOT/deploy/events/"
-kubectl apply -f "$PROJECT_ROOT/deploy/events/$ns_directory"
 kubectl apply -f "$PROJECT_ROOT/deploy/metrics/"
-kubectl apply -f "$PROJECT_ROOT/deploy/metrics/$ns_directory"
 
 # Install wiremock to mock the cloud controller
 kubectl apply -f "$PROJECT_ROOT/deploy/testing/cc-wiremock"
