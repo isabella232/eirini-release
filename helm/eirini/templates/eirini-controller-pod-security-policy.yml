@@ -80,6 +80,14 @@ rules:
   - use
   resourceNames:
   - eirini-controller
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - create
+  - update
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1

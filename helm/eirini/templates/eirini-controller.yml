@@ -6,6 +6,7 @@ metadata:
   name: eirini-controller
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: 3
   selector:
     matchLabels:
       name: eirini-controller
