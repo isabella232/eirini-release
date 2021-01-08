@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: instance-index-env-injector
+  namespace: #@ data.values.system_ns
+data:
+  instance-index-env-injector.yml: |
+    service_name: instance-index-env-injector
+    service_namespace: #@ data.values.system_ns
+    service_port: 8443

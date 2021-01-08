@@ -1,0 +1,9 @@
+#@data/values
+---
+system_ns: eirini-core
+workloads_ns: eirini-workloads
+cc_internal_api: "https://cc-wiremock.eirini-core.svc.cluster.local"
+
+eirini_api:
+  port: 8085
+  serve_plaintext: false

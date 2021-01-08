@@ -1,0 +1,42 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eirini-controller
+  namespace: #@ data.values.system_ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: eirini-controller
+  template:
+    metadata:
+      labels:
+        name: eirini-controller
+    spec:
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-controller
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: eirini-controller
+          image: eirini/eirini-controller@sha256:3a90710ba117807a496774982f939789bb6e0c788f5678970429e9c684634999
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 15m
+              memory: 15Mi
+            limits:
+              cpu: 100m
+              memory: 200Mi
+          volumeMounts:
+            - name: config-map
+              mountPath: /etc/eirini/config
+      volumes:
+        - name: config-map
+          configMap:
+            name: eirini
+            items:
+              - key: opi.yml
+                path: eirini-controller.yml

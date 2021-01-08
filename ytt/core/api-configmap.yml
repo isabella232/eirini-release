@@ -1,0 +1,29 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml","yaml")
+
+#@ def opi_yml():
+opi:
+  app_namespace: #@ data.values.workloads_ns
+
+  cc_tls_disabled: false
+  cc_internal_api: #@ data.values.cc_internal_api
+
+  application_service_account: eirini
+  allow_run_image_as_root: false
+  unsafe_allow_automount_service_account_token: false
+  serve_plaintext: #@ data.values.eirini_api.serve_plaintext
+  #@ if data.values.eirini_api.serve_plaintext == True:
+  plaintext_port: #@ data.values.eirini_api.port
+  #@ else:
+  tls_port: #@ data.values.eirini_api.port
+  #@ end
+#@ end
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eirini
+  namespace: #@ data.values.system_ns
+data:
+  opi.yml: #@ yaml.encode(opi_yml())

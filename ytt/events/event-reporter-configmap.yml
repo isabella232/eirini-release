@@ -1,0 +1,11 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eirini-event-reporter
+  namespace: #@ data.values.system_ns
+data:
+  events.yml: |
+    cc_internal_api: "https://cc-wiremock.eirini-core.svc.cluster.local"
+    cc_tls_disabled: false
