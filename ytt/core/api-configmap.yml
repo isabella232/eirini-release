@@ -4,7 +4,7 @@
 
 #@ def opi_yml():
 opi:
-  app_namespace: #@ data.values.workloads_ns
+  app_namespace: #@ data.values.workloads_ns[0]
 
   cc_tls_disabled: false
   cc_internal_api: #@ data.values.cc_internal_api
