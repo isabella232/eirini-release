@@ -3,7 +3,7 @@
 system_ns: eirini-core
 workloads_ns:
   - eirini-workloads
-cc_internal_api: "https://cc-wiremock.eirini-core.svc.cluster.local"
+cc_internal_api: "http://capi.cf-system.svc.cluster.local:9023"
 
 eirini_api:
   port: 8085
