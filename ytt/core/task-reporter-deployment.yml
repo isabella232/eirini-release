@@ -44,5 +44,5 @@ spec:
                 path: task-reporter.yml
         - name: cc-certs
           secret:
-            secretName: eirini-certs
+            secretName: #@ data.values.capi_tls_secret_name
             optional: true

@@ -4,6 +4,8 @@ system_ns: eirini-core
 workloads_ns:
   - eirini-workloads
 cc_internal_api: "http://capi.cf-system.svc.cluster.local:9023"
+cc_tls_disabled: true
+capi_tls_secret_name: capi-tls
 
 eirini_api:
   port: 8085

@@ -23,7 +23,7 @@ spec:
             name: eirini
         - name: cc-certs
           secret:
-            secretName: capi-tls
+            secretName: #@ data.values.capi_tls_secret_name
             optional: true
         - name: eirini-certs
           secret:

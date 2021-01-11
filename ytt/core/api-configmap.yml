@@ -6,7 +6,7 @@
 opi:
   app_namespace: #@ data.values.workloads_ns[0]
 
-  cc_tls_disabled: false
+  cc_tls_disabled: #@ data.values.cc_tls_disabled
   cc_internal_api: #@ data.values.cc_internal_api
 
   application_service_account: #@ app_service_account_name

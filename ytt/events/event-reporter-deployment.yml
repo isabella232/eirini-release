@@ -23,7 +23,7 @@ spec:
             name: eirini-event-reporter
         - name: cc-certs
           secret:
-            secretName: capi-tls
+            secretName: #@ data.values.capi_tls_secret_name
             optional: true
       securityContext:
         runAsNonRoot: true
