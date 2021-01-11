@@ -1,11 +1,12 @@
 #@ load("@ytt:data", "data")
+#@ load("consts.star", "app_service_account_name")
 
 #@ for ns in data.values.workloads_ns:
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: eirini
+  name: #@ app_service_account_name
   namespace: #@ ns
 automountServiceAccountToken: false
 
@@ -35,7 +36,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
-    name: eirini
+    name: #@ app_service_account_name
     namespace: #@ ns
 
 #@ end

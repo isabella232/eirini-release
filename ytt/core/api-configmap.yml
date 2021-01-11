@@ -1,4 +1,5 @@
 #@ load("@ytt:data", "data")
+#@ load("consts.star", "app_service_account_name")
 #@ load("@ytt:yaml","yaml")
 
 #@ def opi_yml():
@@ -8,7 +9,7 @@ opi:
   cc_tls_disabled: false
   cc_internal_api: #@ data.values.cc_internal_api
 
-  application_service_account: eirini
+  application_service_account: #@ app_service_account_name
   allow_run_image_as_root: false
   unsafe_allow_automount_service_account_token: false
   serve_plaintext: #@ data.values.eirini_api.serve_plaintext
