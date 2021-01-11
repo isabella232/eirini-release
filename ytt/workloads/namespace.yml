@@ -1,6 +1,10 @@
 #@ load("@ytt:data", "data")
+
+#@ for ns in data.values.workloads_ns:
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: #@ data.values.workloads_ns
+  name: #@ ns
+
+#@ end

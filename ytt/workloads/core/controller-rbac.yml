@@ -1,10 +1,12 @@
 #@ load("@ytt:data", "data")
+
+#@ for ns in data.values.workloads_ns:
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: eirini-controller-namespaced-role
-  namespace: #@ data.values.workloads_ns
+  namespace: #@ ns
 rules:
   - apiGroups:
       - eirini.cloudfoundry.org
@@ -59,7 +61,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: eirini-controller-namespaced-rolebinding
-  namespace: #@ data.values.workloads_ns
+  namespace: #@ ns
 roleRef:
   kind: Role
   name: eirini-controller-namespaced-role
@@ -68,4 +70,4 @@ subjects:
   - kind: ServiceAccount
     name: eirini-controller
     namespace: #@ data.values.system_ns
-
+#@ end

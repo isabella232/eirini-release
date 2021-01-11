@@ -1,10 +1,12 @@
 #@ load("@ytt:data", "data")
+
+#@ for ns in data.values.workloads_ns:
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: eirini-event-reporter-namespaced
-  namespace: #@ data.values.workloads_ns
+  namespace: #@ ns
 rules:
   - apiGroups:
       - ""
@@ -17,7 +19,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: eirini-event-reporter-namespaced
-  namespace: #@ data.values.workloads_ns
+  namespace: #@ ns
 roleRef:
   kind: Role
   name: eirini-event-reporter-namespaced
@@ -26,3 +28,4 @@ subjects:
   - kind: ServiceAccount
     name: eirini-event-reporter
     namespace: #@ data.values.system_ns
+#@ end
